@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+
 {% block app_content %}
-    <h1>Willkommen auf der ersten Seite</h1>
+    <h1>Hallo {{ current_user.username}}, willkommen auf der ersten Seite</h1>
 {% endblock %}
