@@ -28,12 +28,16 @@
                     <li><a href="{{ url_for('index') }}">Home</a></li>
                     {% if current_user.is_anonymous %}
                     <li><a href="{{ url_for('login') }}">Login</a></li>
+                    <li><a href="{{ url_for('registrieren') }}">Registrierung</a></li>
                     {% else %}
                     <li><a href="{{ url_for('logout') }}">Logout</a></li>
                     {% endif %}
-                    <li><a href="{{ url_for('registrieren') }}">Registrierung</a></li>
-                    <li><a href="{{ url_for('spiele') }}">Spiele</a></li>
-                    <li><a href="{{ url_for('partien') }}">Partien</a></li>
+                    {% if current_user.is_authenticated %}
+                    <li><a href="{{ url_for('spiele_anzeigen') }}">Liste aller Spiele</a></li>
+                    <li><a href="{{ url_for('spiele_erfassen') }}">Neues Spiel erfassen</a></li>
+                    <li><a href="{{ url_for('partien_anzeigen') }}">Partien anzeigen</a></li>
+                    <li><a href="{{ url_for('partien_erfassen') }}">Neue Partie erfassen</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

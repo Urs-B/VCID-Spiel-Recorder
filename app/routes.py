@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request
 from app import app, db
-from app.forms import LoginForm, RegisterForm
+from app.forms import LoginForm, RegisterForm, SpieleForm
 from app.models import User, Partien, Spiele, Teilnehmer
 from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.urls import url_parse
@@ -47,12 +47,34 @@ def registrieren():
         return redirect(url_for('login'))
     return render_template('registrieren.html', title='Registrierung', form=form)
 
-@app.route('/spiele')
+@app.route('/spiele_anzeigen')
 @login_required
-def spiele():
-    return render_template('spiele.html', title='Spiele')
+def spiele_anzeigen():
+    spiele = Spiele.query.all()
+    return render_template('spiele_anzeigen.html', title='Spiele anzeigen', spiele=spiele)
 
-@app.route('/partien')
+@app.route('/spiele_erfassen', methods=['GET', 'POST'])
 @login_required
-def partien():
-    return render_template('partien.html', titel='Partien')
+def spiele_erfassen():
+    form = SpieleForm()
+    if form.validate_on_submit():
+        spiel = Spiele(spielname=form.spielname.data, spieler_min=form.spieler_min.data, 
+                       spieler_max=form.spieler_max.data, dauer_min=form.dauer_min.data,
+                       dauer_max=form.dauer_max.data)
+        db.session.add(spiel)
+        db.session.commit()
+        flash('Spiel {} wurde erfasst.'.format(form.spielname.data))
+        return redirect(url_for('spiele_erfassen'))
+    return render_template('spiele_erfassen.html', title='Spiele erfassen', form=form)
+
+@app.route('/partien_anzeigen')
+@login_required
+def partien_anzeigen():
+    return render_template('partien_anzeigen.html', titel='Partien anzeigen')
+
+@app.route('/partien_erfassen')
+@login_required
+def partien_erfassen():
+    return render_template('partien_erfassen.html', titel='Partien erfassen')
+
+
