@@ -1,3 +1,5 @@
+# Diese Datei wurde aus den Unterrichtsunterlagen übernommen
+# Quelle: Jochen Reinholdt, Webapplikationen mit Flask
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 

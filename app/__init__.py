@@ -1,3 +1,5 @@
+# Diese Datei wurde aus den Unterrichtsunterlagen übernommen
+# Quelle: Jochen Reinholdt, Webapplikationen mit Flask
 from flask import Flask
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy

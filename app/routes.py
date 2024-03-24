@@ -15,6 +15,8 @@ def index():
 
 ###################### Routen für Usermanagement ############################
 
+# Route für die Login Funktion, Übernommen aus den Unterrichtsunterlagen
+# Quelle: Jochen Reinholdt, Webapplikationen mit Flask
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -32,11 +34,14 @@ def login():
         return redirect(next_page)
     return render_template('login.html', title='Login', form=form)
 
+# Route um sich abzumelden
 @app.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('index'))
 
+# Route für die Registrierung neuer User, Übernommen aus den Unterrichtsunterlagen
+# Quelle: Jochen Reinholdt, Webapplikationen mit Flask
 @app.route('/registrieren', methods=['GET', 'POST'])
 def registrieren():
     if current_user.is_authenticated:
@@ -51,16 +56,20 @@ def registrieren():
         return redirect(url_for('login'))
     return render_template('registrieren.html', title='Registrierung', form=form)
 
+# Route um die eigenen Userdaten anzuzeigen
 @app.route('/user/<username>')
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
     return render_template('user.html', user=user)
 
+# Route um Userdaten zu editieren, Übernommen aus den Unterrichtsunterlagen
+# Quelle: Jochen Reinholdt, Webapplikationen mit Flask
 @app.route('/profil_editieren', methods=['GET', 'POST'])
 @login_required
 def profil_editieren():
     form = EditUserForm()
+    # Informationen der Spiele werden an das Dropdown für Lieblingsspiel übergeben
     form.lieblingsspiel.choices = [(s.spiel_id, s.spielname) for s in Spiele.query.order_by('spielname')]
     if form.validate_on_submit():
         if form.username.data:
@@ -74,12 +83,14 @@ def profil_editieren():
 
 ###################### Routen für Spielemanagement ############################
 
+# Route um alle Spiele anzuzeigen
 @app.route('/spiele_anzeigen')
 @login_required
 def spiele_anzeigen():
     spiele = Spiele.query.all()
     return render_template('spiele_anzeigen.html', title='Spiele anzeigen', spiele=spiele)
 
+# Route um ein neues Spiel zu erfassen
 @app.route('/spiele_erfassen', methods=['GET', 'POST'])
 @login_required
 def spiele_erfassen():
@@ -97,26 +108,34 @@ def spiele_erfassen():
 
 ###################### Routen für Management der Partien ############################
 
+# Route um alle Partien anzuzeigen
 @app.route('/partien_anzeigen')
 @login_required
 def partien_anzeigen():
     partien = Partien.query.order_by(Partien.datum)
     return render_template('partien_anzeigen.html', titel='Partien anzeigen', partien=partien)
 
+# Route um eine neue Partie zu erfassen
 @app.route('/partien_erfassen', methods=['GET', 'POST'])
 @login_required
 def partien_erfassen():
     form = PartienForm()
+    # Informationen der User werden an das Dropdown für Gewinner übergeben
     form.gewinner.choices = [(g.id, g.username) for g in User.query.order_by('username')]
+    # Informationen der Spiele werden an das Dropdown für Spiele übergeben
     form.spiel.choices = [(s.spiel_id, s.spielname) for s in Spiele.query.order_by('spielname')]
     if form.validate_on_submit():
         partie = Partien(datum=form.datum.data, spiel_id=form.spiel.data, gewinner_id=form.gewinner.data)
         anzahl_spieler = form.mitspieler.data
         db.session.add(partie)
         db.session.commit()
+        # Die Anzahl Spieler wird an den Aufruf der Seite Teilnehmer erfassen mitgegeben
         return redirect(url_for('teilnehmer_erfassen', anzahl=anzahl_spieler))
     return render_template('partien_erfassen.html', titel='Partien erfassen', form=form)
 
+# Route um die Teilnehmer einer Partie zu erfassen
+# Je nach Anzahl Teilnehmer wird ein anderes Formular geladen
+# In den If und elif Bedingungen werden auch die Userdaten an die Dropdowns übergeben
 @app.route('/teilnehmer_erfassen/<anzahl>', methods=['GET', 'POST'])
 @login_required
 def teilnehmer_erfassen(anzahl):
@@ -152,6 +171,7 @@ def teilnehmer_erfassen(anzahl):
         form.teilnehmer5.choices = [(g.id, g.username) for g in User.query.order_by('username')]
     else:
         return render_template('index.html')
+    # Die zuletzt erfasste Partie wird ausgewählt und die ID ausgelesen
     partie = Partien.query.order_by(Partien.partie_id.desc()).first()
     partie_id = partie.partie_id
     if form.validate_on_submit():

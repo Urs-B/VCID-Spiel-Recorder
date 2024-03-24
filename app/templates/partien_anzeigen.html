@@ -20,6 +20,7 @@
                 <td> {{ partie.spiel.spielname }} </td>
                 <td> {{ partie.gewinner.username }} </td>
                 <td>
+                <!-- Alle Teilnehmer werden in dieses Feld geschrieben -->
                 {% for teilnehmer in partie.teilnehmer %}
                 {{ teilnehmer.username }} 
                 {% endfor %}

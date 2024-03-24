@@ -6,6 +6,7 @@ from wtforms.validators import DataRequired, ValidationError, Email, EqualTo, Nu
 from app.models import User, Spiele
 
 # Formularklasse für das Login, Übernommen aus den Unterrichtsunterlagen
+# Quelle: Jochen Reinholdt, Webapplikationen mit Flask
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
@@ -13,6 +14,7 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Sign In')
 
 # Formularklasse für das Registrieren neuer User, Übernommen aus den Unterrichtsunterlagen
+# Quelle: Jochen Reinholdt, Webapplikationen mit Flask
 class RegisterForm(FlaskForm):
     username = StringField('Benutzername', validators=[DataRequired()])
     email = StringField('Email', validators=[Email(), DataRequired()])
@@ -45,6 +47,7 @@ class SpieleForm(FlaskForm):
     spieler_max = IntegerField('Spieler maximum', validators=[DataRequired(), NumberRange(1,6)])
     submit = SubmitField('Erfassen')
 
+# Methode um zu prüfen, dass der Spielename einzigartig ist
     def validate_spielname(self, spielname):
         spiel = Spiele.query.filter_by(spielname=spielname.data).first()
         if spiel is not None:
@@ -58,6 +61,7 @@ class PartienForm(FlaskForm):
     mitspieler = IntegerField('Anzahl Mitspieler', validators=[DataRequired()])
     submit = SubmitField('Erfassen')
 
+# Methode um zu prüfen, ob das ausgewählte Spiel so viele Mitspieler unterstützt
     def validate_mitspieler(self, mitspieler):
         aktuelles_spiel = Spiele.query.filter_by(spiel_id=self.spiel.data).first()
         max = aktuelles_spiel.spieler_max
