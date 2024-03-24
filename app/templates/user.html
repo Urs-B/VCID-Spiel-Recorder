@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <h1>Das Profil von {{ user.username }}</h1>
+    <br>
+    <p>Hier sind Deine Profilinformationen</p>
+    <br>
+    <table class="table table-bordered">
+        <tr>
+            <th> Username: </th>
+            <td> {{ user.username }} </td>
+        </tr>
+        <tr>
+            <th> Email: </th>
+            <td> {{ user.email }} </td>
+        </tr>
+        <tr>
+            <th> Lieblingsspiel: </th>
+            <td> {{ user.lieblingsspiel.spielname if user.lieblingsspiel else 'Kein Lieblingsspiel gewählt' }} </td>
+        </tr>
+    </table>
+{% endblock %}

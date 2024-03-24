@@ -8,6 +8,9 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(128), index=True, unique=True)
     passwort_hash = db.Column(db.String(128))
+    lieblingsspiel_id = db.Column(db.Integer, db.ForeignKey('spiele.spiel_id'))
+
+    lieblingsspiel = db.relationship('Spiele')
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -35,6 +38,15 @@ class Spiele(db.Model):
 
 class Partien(db.Model):
     partie_id = db.Column(db.Integer, primary_key=True)
+    datum = db.Column(db.Date)
+    spiel_id = db.Column(db.Integer, db.ForeignKey('spiele.spiel_id'))
+    gewinner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    spiel = db.relationship('Spiele')
+    gewinner = db.relationship('User', backref='gewonnene_partien')
+    teilnehmer = db.relationship('User', secondary='teilnehmer', backref='teilgenommen_partien')
 
 class Teilnehmer(db.Model):
     teilnahme_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    partie_id = db.Column(db.Integer, db.ForeignKey('partien.partie_id'))
