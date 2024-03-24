@@ -100,7 +100,8 @@ def spiele_erfassen():
 @app.route('/partien_anzeigen')
 @login_required
 def partien_anzeigen():
-    return render_template('partien_anzeigen.html', titel='Partien anzeigen')
+    partien = Partien.query.order_by(Partien.datum)
+    return render_template('partien_anzeigen.html', titel='Partien anzeigen', partien=partien)
 
 @app.route('/partien_erfassen', methods=['GET', 'POST'])
 @login_required

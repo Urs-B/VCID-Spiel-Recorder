@@ -21,6 +21,23 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.passwort_hash, password)
     
+    def to_dict(self):
+        spiel = self.lieblingsspiel.spielname if self.lieblingsspiel else "Kein Lieblingsspiel ausgewählt"
+        data = {
+            'id': self.id,
+            'Username': self.username,
+            'Email': self.email,
+            'Lieblingsspiel': spiel
+        }
+        return data
+    
+    @staticmethod
+    def to_collection():
+        users = User.query.all()
+        data = {'items': [item.to_dict() for item in users]}
+        return data
+
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
@@ -35,6 +52,21 @@ class Spiele(db.Model):
 
     def __repr__(self):
         return '<Spiel {}>'.format(self.spielname)
+    
+    def to_dict(self):
+        data = {
+            'id': self.spiel_id,
+            'Spielname': self.spielname,
+            'Spieleranzahl': str(self.spieler_min) + " bis " + str(self.spieler_max),
+            'Spieldauer': str(self.dauer_min) + " bis " + str(self.dauer_max) + " Minuten"
+        }
+        return data
+    
+    @staticmethod
+    def to_collection():
+        spiele = Spiele.query.all()
+        data = {'items': [item.to_dict() for item in spiele]}
+        return data
 
 class Partien(db.Model):
     partie_id = db.Column(db.Integer, primary_key=True)
@@ -45,6 +77,21 @@ class Partien(db.Model):
     spiel = db.relationship('Spiele')
     gewinner = db.relationship('User', backref='gewonnene_partien')
     teilnehmer = db.relationship('User', secondary='teilnehmer', backref='teilgenommen_partien')
+
+
+    def to_dict(self):
+        teilnehmer_string = ", ".join([teilnehmer.username for teilnehmer in self.teilnehmer])
+        data = {
+            'id': self.partie_id,
+            'Teilnehmer': teilnehmer_string
+        }
+        return data
+    
+    @staticmethod
+    def to_collection():
+        partien = Partien.query.all()
+        data = {'items': [item.to_dict() for item in partien]}
+        return data
 
 class Teilnehmer(db.Model):
     teilnahme_id = db.Column(db.Integer, primary_key=True)

@@ -2,6 +2,30 @@
 
 {% block app_content %}
     <h1>Willkommen auf der Partien Seite.</h1>
-    <div>Hier kommt dann eine LIste mit gespielten Partien hin</div>
-    <div>Als User soll man einen Usernamen eingeben können und alle Partiene des User sehen</div>
+    <table class="table table-striped table-sm">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Datum</th>
+                <th scope="col">spiel</th>
+                <th scope="col">gewinner</th>
+                <th scope="col">Teilnehmer</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for partie in partien %}
+            <tr>
+                <th> {{ partie.partie_id }} </th>
+                <td> {{ partie.datum }} </td>
+                <td> {{ partie.spiel.spielname }} </td>
+                <td> {{ partie.gewinner.username }} </td>
+                <td>
+                {% for teilnehmer in partie.teilnehmer %}
+                {{ teilnehmer.username }} 
+                {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
