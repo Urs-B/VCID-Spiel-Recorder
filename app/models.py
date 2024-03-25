@@ -74,7 +74,7 @@ class Spiele(db.Model):
         data = {'items': [item.to_dict() for item in spiele]}
         return data
 
-# Klasse für das DB Model für Spiele
+# Klasse für das DB Model für Partien
 class Partien(db.Model):
     partie_id = db.Column(db.Integer, primary_key=True)
     datum = db.Column(db.Date)
